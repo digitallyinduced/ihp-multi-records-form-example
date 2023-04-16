@@ -5,9 +5,7 @@ data IndexView = IndexView { tasks :: [Task]  }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
-        {breadcrumb}
-
-        <h1>Index<a href={pathTo NewTaskAction} class="btn btn-primary ms-4">+ New</a></h1>
+        <h1>Tasks<a href={pathTo NewTaskAction} class="btn btn-primary ms-4">+ New</a></h1>
         <div class="table-responsive">
             <table class="table">
                 <thead>
@@ -31,7 +29,7 @@ instance View IndexView where
 renderTask :: Task -> Html
 renderTask task = [hsx|
     <tr>
-        <td>{task}</td>
+        <td>{task.description}</td>
         <td><a href={ShowTaskAction task.id}>Show</a></td>
         <td><a href={EditTaskAction task.id} class="text-muted">Edit</a></td>
         <td><a href={DeleteTaskAction task.id} class="js-delete text-muted">Delete</a></td>
