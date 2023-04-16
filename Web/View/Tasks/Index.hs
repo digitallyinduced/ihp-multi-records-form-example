@@ -1,7 +1,7 @@
 module Web.View.Tasks.Index where
 import Web.View.Prelude
 
-data IndexView = IndexView { tasks :: [Task]  }
+data IndexView = IndexView { tasks :: [Include "tags" Task]  }
 
 instance View IndexView where
     html IndexView { .. } = [hsx|
@@ -26,12 +26,19 @@ instance View IndexView where
                 [ breadcrumbLink "Tasks" TasksAction
                 ]
 
-renderTask :: Task -> Html
+renderTask :: Include "tags" Task -> Html
 renderTask task = [hsx|
     <tr>
         <td>{task.description}</td>
+        <td>{renderTags task.tags}</td>
         <td><a href={ShowTaskAction task.id}>Show</a></td>
         <td><a href={EditTaskAction task.id} class="text-muted">Edit</a></td>
         <td><a href={DeleteTaskAction task.id} class="js-delete text-muted">Delete</a></td>
     </tr>
 |]
+
+renderTags :: [Tag] -> Text
+renderTags tags =
+    tags
+    |> map (.name)
+    |> intercalate ", "

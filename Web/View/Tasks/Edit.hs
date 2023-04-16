@@ -1,7 +1,8 @@
 module Web.View.Tasks.Edit where
 import Web.View.Prelude
+import Web.View.Tasks.New (renderForm)
 
-data EditView = EditView { task :: Task }
+data EditView = EditView { task :: Include "tags" Task }
 
 instance View EditView where
     html EditView { .. } = [hsx|
@@ -14,10 +15,3 @@ instance View EditView where
                 [ breadcrumbLink "Tasks" TasksAction
                 , breadcrumbText "Edit Task"
                 ]
-
-renderForm :: Task -> Html
-renderForm task = formFor task [hsx|
-    {(textField #description)}
-    {submitButton}
-
-|]
