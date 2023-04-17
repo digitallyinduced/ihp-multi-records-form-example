@@ -37,7 +37,7 @@ prototypeFor field record =
     where
         parentFormContext = ?formContext
         prototype :: Html
-        prototype = let ?formContext = parentFormContext { model = parentFormContext.model |> set field [newRecord] } in nestedFormFor field renderTagForm
+        prototype = let ?formContext = parentFormContext { model = parentFormContext.model |> set field [record] } in nestedFormFor field renderTagForm
 
 renderTagForm :: (?formContext :: FormContext Tag) => Html
 renderTagForm = [hsx|
