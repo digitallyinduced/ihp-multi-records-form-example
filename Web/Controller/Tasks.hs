@@ -32,12 +32,13 @@ instance Controller TasksController where
 
         let tagIds :: [Id Tag] = paramList "tags_id"
         let tagNames :: [Text] = paramList "tags_name"
+        let tagNumbers :: [Int] = paramList "tags_number"
         originalTags <- fetch tagIds
-        let tags = zip tagIds tagNames
-                |> map (\(id, name) -> originalTags
+        let tags = zip3 tagIds tagNames tagNumbers
+                |> map (\(id, name, number) -> originalTags
                     |> find (\tag -> tag.id == id)
                     |> fromMaybe (newRecord |> set #taskId task.id)
-                    |> \tag -> buildTag tag name
+                    |> \tag -> buildTag tag name number
                 )
 
 
@@ -62,7 +63,8 @@ instance Controller TasksController where
     action CreateTaskAction = do
         let task = newRecord @Task
         let names :: [Text] = paramList "tags_name"
-        let tags = names |> map (buildTag newRecord)
+        let numbers :: [Int] = paramList "tags_number"
+        let tags = zip names numbers |> map (\(name, number) -> buildTag newRecord name number)
 
         task
             |> buildTask
@@ -78,7 +80,7 @@ instance Controller TasksController where
                             |> createMany
 
                         pure (task, tags)
-                    
+
                     setSuccessMessage "Task and Tags created"
                     redirectTo TasksAction
 
@@ -92,10 +94,13 @@ buildTask task = task
     |> fill @'["description"]
     |> validateField #description nonEmpty
 
-buildTag :: Tag -> Text -> Tag
-buildTag tag name = tag
+buildTag :: Tag -> Text -> Int -> Tag
+buildTag tag name number = tag
     |> set #name name
+    |> set #number number
     |> validateField #name nonEmpty
+    -- Validate number is above 10
+    |> validateField #number (isGreaterThan 10)
 
 -- | Adds a validation error to the record when any of the child records is invalid
 bubbleValidationResult :: forall fieldName record childRecord.

@@ -1,6 +1,7 @@
 let
     ihp = builtins.fetchGit {
         url = "https://github.com/digitallyinduced/ihp.git";
+        ref = "refs/heads/nestedFormFor";
         rev = "c049d0e3f0f1c7fcc80f275b8307446ece00bcf0";
     };
     haskellEnv = import "${ihp}/NixSupport/default.nix" {
