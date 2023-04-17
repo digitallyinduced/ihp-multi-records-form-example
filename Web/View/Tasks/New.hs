@@ -41,5 +41,8 @@ prototypeFor field record =
 
 renderTagForm :: (?formContext :: FormContext Tag) => Html
 renderTagForm = [hsx|
-    {(textField #name) { disableLabel = True, placeholder = "Tag name" } }
+    <fieldset class="border p-2 m-4">
+        {(textField #name) { disableLabel = True, placeholder = "Tag name" } }
+        {(numberField #number) { disableLabel = True, placeholder = "Tag number" } }
+    </fieldset>
 |]
